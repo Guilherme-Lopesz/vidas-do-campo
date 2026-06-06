@@ -459,9 +459,17 @@ const MINIGAMES_BY_STATION = {
    HELPERS
 ─────────────────────────────────────── */
 function switchScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+        // Reset scroll position when leaving a screen
+        s.scrollTop = 0;
+    });
     const el = document.getElementById(id);
-    if (el) el.classList.add('active');
+    if (el) {
+        el.classList.add('active');
+        // Always start at top of new screen
+        el.scrollTop = 0;
+    }
     G.prevScreen = id;
     updateHUD();
 }
@@ -642,6 +650,10 @@ function renderQuestion() {
     G.currentQ = q;
     G.answered = false;
     G.hintUsed = false;
+
+    // Reset scroll to top on every new question (critical for mobile)
+    const quizScreen = document.getElementById('screen-quiz');
+    if (quizScreen) quizScreen.scrollTop = 0;
 
     const dots = document.getElementById('progress-dots');
     dots.innerHTML = '';
@@ -1599,6 +1611,13 @@ function showMGResult(win, message) {
         `<strong>${win ? '🎉 Consequência:' : '⚠️ Consequência:'}</strong><br>${message}<br><br>` +
         `🍼 Sobrevivência: ${win ? '+' : ''}${win ? impact.win : impact.lose}%` +
         (win ? `<br>💰 +R$ 100 | ⭐ +200 pts` : '');
+
+    // Scroll to result on mobile so the user sees it
+    setTimeout(() => {
+        const mgScreen = document.getElementById('screen-minigame');
+        if (mgScreen) mgScreen.scrollTop = mgScreen.scrollHeight;
+        res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
 
     updateHUD();
 }
