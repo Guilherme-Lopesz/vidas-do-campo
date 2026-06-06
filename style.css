@@ -477,7 +477,13 @@ input[type=text]:focus { border-color: var(--green2); }
 }
 
 /* ===== QUIZ ===== */
-#screen-quiz { background: var(--bg); padding-top: var(--hud-h, 150px); }
+#screen-quiz { 
+    background: var(--bg); 
+    padding-top: var(--hud-h, 150px);
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+}
 .quiz-header {
     display: flex;
     justify-content: space-between;
