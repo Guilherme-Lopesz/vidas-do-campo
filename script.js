@@ -2285,3 +2285,34 @@ const CC_QUESTIONS = {
 })();
 
 console.log('Casos clínicos como questão — carregado ✅');
+
+/* ===== MOBILE HUD HEIGHT FIX =====
+   Measures the real HUD height and sets --hud-h CSS variable on :root.
+   All screens use padding-top: var(--hud-h) so nothing is ever hidden.
+================================================================ */
+(function applyHudHeightFix() {
+    function measureAndApply() {
+        const hud = document.getElementById('hud');
+        if (!hud) return;
+        const h = hud.getBoundingClientRect().height;
+        const offset = h + 6; // 6px breathing room
+        document.documentElement.style.setProperty('--hud-h', offset + 'px');
+
+        // Apply directly to every screen element too (belt + suspenders)
+        document.querySelectorAll('.screen').forEach(s => {
+            s.style.paddingTop = offset + 'px';
+        });
+    }
+
+    // Run immediately, after fonts load, and on resize
+    measureAndApply();
+    window.addEventListener('load', measureAndApply);
+    window.addEventListener('resize', measureAndApply);
+
+    // Also re-measure when screen changes (in case HUD content shifts layout)
+    const _orig = window.switchScreen;
+    window.switchScreen = function(id) {
+        _orig(id);
+        requestAnimationFrame(measureAndApply);
+    };
+})();
