@@ -65,6 +65,10 @@ html, body {
     opacity: 0.4;
 }
 
+:root {
+    --hud-h: 150px; /* fallback — JS will override with real measured value */
+}
+
 /* ===== SCREENS ===== */
 .screen {
     position: absolute;
@@ -74,14 +78,13 @@ html, body {
     align-items: center;
     overflow-y: auto;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+    -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    padding-top: 96px;
+    padding-top: var(--hud-h, 150px); /* JS sets --hud-h to real HUD height */
     opacity: 0;
     pointer-events: none;
     transform: translateX(40px);
     transition: opacity .3s ease, transform .3s ease;
-    /* ensure content isn't cut off at the bottom */
     padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 .screen.active {
@@ -89,7 +92,7 @@ html, body {
     pointer-events: all;
     transform: translateX(0);
 }
-.screen-pad { padding: 106px 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
+.screen-pad { padding: var(--hud-h, 150px) 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
 
 /* ===== HUD ===== */
 #hud {
@@ -474,7 +477,7 @@ input[type=text]:focus { border-color: var(--green2); }
 }
 
 /* ===== QUIZ ===== */
-#screen-quiz { background: var(--bg); padding-top: 100px; }
+#screen-quiz { background: var(--bg); padding-top: var(--hud-h, 150px); }
 .quiz-header {
     display: flex;
     justify-content: space-between;
@@ -1440,16 +1443,19 @@ input[type=text]:focus { border-color: var(--green2); }
     font-family: 'Courier New', monospace;
 }
 
-/* ── HUD taller to accommodate timer ── */
+/* ── HUD height: padding controlled by JS via --hud-h ── */
 #screen-quiz { 
-    padding-top: 112px;
+    padding-top: var(--hud-h, 150px);
     padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
 }
 .screen { 
-    padding-top: 112px;
+    padding-top: var(--hud-h, 150px);
 }
 .screen-pad { 
-    padding: 120px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+    padding-top: var(--hud-h, 150px);
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
 }
 
 /* ── Contexto inline do caso clínico no quiz ── */
@@ -1567,6 +1573,7 @@ input[type=text]:focus { border-color: var(--green2); }
 /* ── Garante que telas com notch/barra inferior sejam respeitadas ── */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
     .screen {
+        /* padding-top is controlled by JS via --hud-h, only override bottom */
         padding-bottom: max(20px, env(safe-area-inset-bottom));
     }
     #screen-quiz {
