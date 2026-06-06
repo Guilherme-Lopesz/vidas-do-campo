@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vidas do Campo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+<div id="app">
+
+    <!-- ===== HUD ===== -->
+    <div id="hud">
+        <div class="hud-row">
+            <span id="hud-farm">Fazenda</span>
+            <span style="display:flex;gap:8px;align-items:center;">
+                <button id="btn-mute" onclick="toggleMute()">🔊</button>
+                <button id="btn-ranking-hud" onclick="showRanking()">ranking</button>
+            </span>
+        </div>
+        <div class="hud-row">
+            <span class="hud-stat" id="hud-money">R$ 0</span>
+            <span class="hud-stat" id="hud-score">0 pts</span>
+            <span class="hud-stat" id="hud-station">1/7</span>
+            <span class="hud-stat" id="hud-hearts">❤️❤️❤️❤️❤️</span>
+        </div>
+        <div class="hud-row">
+            <div class="survival-track"><div class="survival-fill" id="hud-survival"></div></div>
+            <span id="hud-survival-label" class="survival-label">SOBREVIVÊNCIA 100%</span>
+        </div>
+        <div class="hud-row hud-timer-row">
+            <span class="hud-timer-label">⏱️ TEMPO</span>
+            <span class="hud-stat hud-timer-stat" id="hud-timer">00:00:00</span>
+        </div>
+    </div>
+
+    <!-- ===== SPLASH ===== -->
+    <div id="screen-splash" class="screen active">
+        <div class="splash-bg">
+            <!-- SKY GRADIENT -->
+            <div class="splash-sky"></div>
+            <!-- STARS -->
+            <div id="splash-stars"></div>
+            <!-- CLOUDS -->
+            <div class="splash-cloud cloud-1"></div>
+            <div class="splash-cloud cloud-2"></div>
+            <div class="splash-cloud cloud-3"></div>
+            <!-- SUN pulsante -->
+            <div class="splash-sun"></div>
+            <!-- WIND TURBINE SVG -->
+            <div class="splash-turbine">
+                <svg viewBox="0 0 60 120" width="60" height="120" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Tower -->
+                    <polygon points="28,120 32,120 30,50" fill="#4a6741" opacity="0.8"/>
+                    <!-- Hub -->
+                    <circle cx="30" cy="50" r="4" fill="#6a9a72"/>
+                    <!-- Spinning blades group -->
+                    <g id="turbine-blades" style="transform-origin:30px 50px; animation: turbineSpin 3s linear infinite;">
+                        <ellipse cx="30" cy="26" rx="4" ry="14" fill="#88d4a8" opacity="0.9" transform="rotate(0 30 50)"/>
+                        <ellipse cx="30" cy="26" rx="4" ry="14" fill="#88d4a8" opacity="0.9" transform="rotate(120 30 50)"/>
+                        <ellipse cx="30" cy="26" rx="4" ry="14" fill="#88d4a8" opacity="0.9" transform="rotate(240 30 50)"/>
+                    </g>
+                </svg>
+            </div>
+            <!-- HILLS -->
+            <div class="splash-hills">
+                <div class="splash-hill splash-hill-1"></div>
+                <div class="splash-hill splash-hill-2"></div>
+                <div class="splash-hill splash-hill-3"></div>
+            </div>
+            <!-- FENCE -->
+            <div class="splash-fence">
+                <svg viewBox="0 0 480 40" width="100%" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="#3d2b1f" opacity="0.7">
+                        <rect x="0" y="8" width="480" height="5" rx="2"/>
+                        <rect x="0" y="22" width="480" height="5" rx="2"/>
+                        <!-- Posts -->
+                        <rect x="5" y="2" width="8" height="36" rx="2"/>
+                        <rect x="55" y="2" width="8" height="36" rx="2"/>
+                        <rect x="105" y="2" width="8" height="36" rx="2"/>
+                        <rect x="155" y="2" width="8" height="36" rx="2"/>
+                        <rect x="205" y="2" width="8" height="36" rx="2"/>
+                        <rect x="255" y="2" width="8" height="36" rx="2"/>
+                        <rect x="305" y="2" width="8" height="36" rx="2"/>
+                        <rect x="355" y="2" width="8" height="36" rx="2"/>
+                        <rect x="405" y="2" width="8" height="36" rx="2"/>
+                        <rect x="455" y="2" width="8" height="36" rx="2"/>
+                    </g>
+                </svg>
+            </div>
+            <!-- ANIMALS LAYER -->
+            <div class="splash-animals-layer" id="animals-layer">
+                <!-- Vaca A (caminha dir→esq) -->
+                <div class="splash-animal cow-a" id="cow-a"></div>
+                <!-- Bezerra seguindo Vaca A -->
+                <div class="splash-animal calf-a" id="calf-a"></div>
+                <!-- Vaca B (caminha esq→dir) -->
+                <div class="splash-animal cow-b" id="cow-b"></div>
+                <!-- Vaca C (pastando) -->
+                <div class="splash-animal cow-c" id="cow-c"></div>
+            </div>
+        </div>
+        <div class="splash-content">
+            <p class="splash-eyebrow">simulador de manejo</p>
+            <h1 class="splash-title">Vidas do <span>Campo</span></h1>
+            <p class="splash-tagline">Salve bezerros e cordeiros. Tome decisões clínicas. Reduza a mortalidade neonatal da sua fazenda.</p>
+            <div class="splash-pills">
+                <span class="splash-pill">7 etapas</span>
+                <span class="splash-pill">Casos clínicos</span>
+                <span class="splash-pill">Minijogos práticos</span>
+                <span class="splash-pill">Bovinos &amp; Ovinos</span>
+            </div>
+            <div class="splash-btns">
+                <button class="btn btn-yellow" onclick="switchScreen('screen-setup')">Começar Jornada</button>
+                <button class="btn btn-ghost" onclick="showRanking()">Ver Ranking</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SETUP ===== -->
+    <div id="screen-setup" class="screen">
+        <div class="setup-hero">
+            <span>🏡</span>
+            <h2>Criar sua Fazenda</h2>
+            <p>Dê um nome e escolha seus animais</p>
+        </div>
+        <div class="card">
+            <label class="field-label">Nome da Fazenda</label>
+            <input type="text" id="input-farm" placeholder="Ex: Fazenda Boa Esperança" maxlength="22">
+
+            <label class="field-label">Escolha seu rebanho</label>
+            <div class="species-grid">
+                <div class="species-card selected" id="spec-bov" onclick="selectSpecies('Bovinos')">
+                    <span>🐄</span>
+                    <strong>Bovinos</strong>
+                    <small>Vacas e bois</small>
+                    <div class="diff-tag easy">Fácil</div>
+                </div>
+                <div class="species-card" id="spec-ovi" onclick="selectSpecies('Ovinos')">
+                    <span>🐑</span>
+                    <strong>Ovinos</strong>
+                    <small>Ovelhas</small>
+                    <div class="diff-tag hard">Difícil</div>
+                </div>
+            </div>
+            <div class="mode-desc" id="mode-desc">
+                <strong>Modo Bovinos:</strong> Perguntas diretas, mais tempo, mais pistas. Ideal para iniciantes!
+            </div>
+            <button class="btn btn-primary" onclick="startGame()">Iniciar Jornada</button>
+        </div>
+    </div>
+
+    <!-- ===== STATION INTRO ===== -->
+    <div id="screen-station-intro" class="screen screen-pad" style="justify-content:center;">
+        <div class="intro-card-header">
+            <span class="station-badge" id="intro-badge">Etapa 1 de 7</span>
+            <span class="intro-emoji" id="intro-emoji">🌸</span>
+            <h2 class="intro-title" id="intro-title">Título</h2>
+        </div>
+        <div id="narrative-event" class="narrative-box" style="display:none;"></div>
+        <div class="card">
+            <p id="intro-text" class="intro-body"></p>
+        </div>
+        <div id="intro-effects" style="margin:0 16px 16px;"></div>
+
+        <div style="padding:0 16px 20px;">
+            <div class="mg-incoming-banner" style="margin-bottom:10px;">🎮 Minijogos práticos a cada 2 questões!</div>
+            <button class="btn btn-primary" onclick="startQuiz()">Vamos lá!</button>
+        </div>
+    </div>
+
+    <!-- ===== QUIZ ===== -->
+    <div id="screen-quiz" class="screen" style="padding:14px 16px 80px;">
+        <div class="quiz-header">
+            <div class="quiz-progress-dots" id="progress-dots"></div>
+            <span class="counter-bubble" id="quiz-counter">1/5</span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="quiz-timer" style="background:var(--green2);width:100%;"></div></div>
+        <div id="streak-banner">🔥 Em Chamas! Pontos dobrados!</div>
+        <span id="quiz-badge" class="badge badge-easy">Fácil</span>
+
+        <div class="svg-box" id="quiz-svg"></div>
+        <div id="quiz-question-text" class="question-text"></div>
+
+        <div id="hint-bar">
+            <button id="btn-hint" onclick="useHint()">💡 Pedir pista</button>
+            <span id="hint-cost-label" class="hint-cost">−40% pontos</span>
+        </div>
+        <div id="hint-text" class="hint-box"></div>
+
+        <div class="options-grid" id="quiz-options"></div>
+
+        <div id="feedback-box">
+            <strong id="feedback-title"></strong>
+            <p id="feedback-desc"></p>
+            <button class="btn btn-primary" style="margin-top:10px;" id="btn-next" onclick="nextQuestion()">Continuar →</button>
+        </div>
+    </div>
+
+    <!-- ===== MINIGAME ===== -->
+    <div id="screen-minigame" class="screen screen-pad">
+        <div class="mg-header">
+            <div class="mg-mode-badge" id="mg-mode-badge">Modo Bovino</div>
+            <h2 id="mg-title">Minijogo</h2>
+            <p id="mg-desc">Descrição aqui</p>
+            <div id="mg-timer-bar-wrap"><div id="mg-timer-bar" style="width:100%;"></div></div>
+        </div>
+        <p class="mg-progress-label" id="mg-progress-label"></p>
+        <div id="mg-area" class="mg-area"></div>
+        <div id="mg-result">
+            <span id="mg-result-icon">✅</span>
+            <div id="mg-result-title">Parabéns!</div>
+            <div id="mg-consequence" class="mg-consequence"></div>
+            <button class="btn btn-purple" onclick="finishMinigame()">Continuar Quiz →</button>
+        </div>
+    </div>
+
+    <!-- ===== REPORT ===== -->
+    <div id="screen-report" class="screen screen-pad">
+        <h2 class="section-title">Resultado da Etapa</h2>
+        <div class="card">
+            <div class="report-row"><span class="report-label">Acertos no Quiz</span><span class="report-value" id="rep-hits">0/5</span></div>
+            <div class="report-row"><span class="report-label">Minijogos</span><span class="report-value" id="rep-mg">0</span></div>
+            <div class="report-row"><span class="report-label">Sobrevivência Neonatal</span><span class="report-value" id="rep-survival">100%</span></div>
+            <div class="report-row"><span class="report-label">Dinheiro Ganho</span><span class="report-value green" id="rep-money">+R$ 0</span></div>
+            <div class="vet-tip">
+                <strong>💡 Dica do Veterinário</strong>
+                <p id="rep-vet"></p>
+            </div>
+        </div>
+        <button class="btn btn-primary" onclick="nextStation()">Próxima Etapa →</button>
+    </div>
+
+    <!-- ===== FINAL ===== -->
+    <div id="screen-final" class="screen screen-pad">
+        <div class="final-hero">
+            <span class="final-trophy">🏆</span>
+            <h2 class="final-title-text" id="final-title">Título</h2>
+            <p class="final-sub" id="final-mode-label"></p>
+        </div>
+        <div class="card">
+            <div class="report-row"><span class="report-label">Pontuação</span><span class="report-value" id="final-score"></span></div>
+            <div class="report-row"><span class="report-label">Dinheiro Total</span><span class="report-value" id="final-money"></span></div>
+            <div class="report-row"><span class="report-label">Corações Restantes</span><span class="report-value" id="final-hearts"></span></div>
+            <div class="report-row"><span class="report-label">Taxa de Sobrevivência</span><span class="report-value" id="final-survival"></span></div>
+            <div class="report-row"><span class="report-label">Minijogos Vencidos</span><span class="report-value" id="final-mg"></span></div>
+            <div class="report-row" style="border:none;"><span class="report-label">⏱️ Tempo Total</span><span class="report-value green" id="final-time"></span></div>
+        </div>
+        <button class="btn btn-primary" onclick="showRanking()">Ver Ranking</button>
+        <button class="btn btn-outline" onclick="location.reload()">Jogar de Novo</button>
+    </div>
+
+    <!-- ===== RANKING ===== -->
+    <div id="screen-ranking" class="screen screen-pad">
+        <h2 class="section-title">🏆 Top Fazendas</h2>
+        <div id="ranking-list"></div>
+        <button class="btn btn-outline" onclick="closeRanking()">← Voltar</button>
+    </div>
+
+</div>
+<script src="script2.js"></script>
+<script>
+// ===== SPLASH STARS =====
+(function() {
+    const container = document.getElementById('splash-stars');
+    if (!container) return;
+    for (let i = 0; i < 40; i++) {
+        const star = document.createElement('div');
+        star.className = 'splash-star';
+        star.style.cssText = `
+            top: ${Math.random() * 55}%;
+            left: ${Math.random() * 100}%;
+            --d: ${2 + Math.random() * 3}s;
+            --delay: ${Math.random() * 3}s;
+            width: ${Math.random() > 0.8 ? 3 : 2}px;
+            height: ${Math.random() > 0.8 ? 3 : 2}px;
+        `;
+        container.appendChild(star);
+    }
+})();
+</script>
+</body>
+</html>
